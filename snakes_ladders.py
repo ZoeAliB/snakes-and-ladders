@@ -8,7 +8,7 @@ class Player:
         self.position = 1
   
     def __repr__(self):
-        return print("This is {name} they are at square {pos}.".format(name = self.name, pos = self.position))
+        return "This is {name} they are at square {pos}.".format(name = self.name, pos = self.position)
 
     def roll_dice(self):
         roll = input("\n\n{name}, it's your go! When you are ready to roll the die, type roll:\n".format(name = self.name))
@@ -46,7 +46,7 @@ class Board:
         self.snake_end_loc = []
 
     def __repr__(self):
-        return print("This is the board of {squares} squares and has snakes located at squares {snake} and ladders located at squares {ladders}".format(squares = self.squares_remaining, snake = self.snake_loc, ladders = self.ladder_loc))
+        return "This is the board of {squares} squares and has snakes located at squares {snake} and ladders located at squares {ladders}".format(squares = self.squares_remaining, snake = self.snake_loc, ladders = self.ladder_loc)
 
     def generate_snakes(self):
         for count in range(self.snake_num):
