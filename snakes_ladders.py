@@ -11,26 +11,28 @@ class Player:
         return print("This is {name} they are at square {pos}.".format(name = self.name, pos = self.position))
 
     def roll_dice(self):
-        roll = input("{name}, it's your go! When you are ready to roll the die, type roll:\n".format(name = self.name))
+        roll = input("\n\n{name}, it's your go! When you are ready to roll the die, type roll:\n".format(name = self.name))
         while roll.lower() != "roll":
             roll = input("Take your time {name}, we are all waiting...\n".format(name = self.name))
         if roll.lower() == "roll":
-            self.dice = random.randint(1, 6)
-        print(self.dice)
+            self.dice = random.randint(2, 12)
     
     def advance(self):
-        self.position += self.dice
-        print("{name} rolled a {dice}! They are now on square {pos}.".format(name = self.name, dice = self.dice, pos = self.position))
+        if self.position + self.dice <= 100:
+            self.position += self.dice
+            print("{name} rolled {dice} altogether! They are now on square {pos}."
+                  .format(name = self.name, dice = self.dice, pos = self.position))
+        else:
+            print("{name} rolled {dice}. Since they are on {pos} they won't be able to move till they roll a {num}"
+                  .format(name = self.name, dice = self.dice, pos = self.position, num = 100 - self.position))
 
-    def land_on_obstical(self, ob_start, ob_end):
-        for num in len(ob_start):
-            if ob_start > ob_end[num]:
-                self.position = ob_end[num]
-                print("Oh no! {name} slid down a snake! They are now on square {pos}".format(name = self.name, pos = self.position))
-            elif ob_start < ob_end[num]:
-                self.position = ob_end[num]
-                print("{name} has climbed a ladder! They are now on square {pos}.".format(name = self.name, pos = self.position))
-      
+    def land_on_snake(self, ob_end):
+        self.position = ob_end[num]
+        print("Oh no! {name} slid down a snake! They are now on square {pos}".format(name = self.name, pos = self.position))
+
+    def land_on_ladder(self, ob_end):
+        self.position = ob_end
+        print("{name} has climbed a ladder! They are now on square {pos}.".format(name = self.name, pos = self.position))
       
     
 class Board:
@@ -69,10 +71,10 @@ class Board:
     def win(self, player_name):
         replay = input("{name} has won! They have landed on square 100! \n" 
         "Would you like to play again? \n"
-        "(Press Q to quit, press R to replay)".format(name = player_name))
+        "(Press Q to quit, press R to replay)\n".format(name = player_name))
         while replay.lower() != "r" or replay.lower() != "q":
             replay = input("That wasn't right... lets try again. \n"
-            "Press Q to quit, press R to replay")
+            "Press Q to quit, press R to replay\n")
         if replay.lower() == "r":
             game_start()
         elif replay.lower() == "q":
@@ -83,21 +85,30 @@ def game_start():
     board.generate_snakes()
     board.generate_ladders()
 
-    player_one_name = input("Welcome to snakes and ladders! This is a two player game, so grab a friend. First player, enter your name:\n")
+    player_one_name = input("Welcome to snakes and ladders! This is a two player game, so grab a friend. \nFirst player, enter your name:\n")
     player_two_name = input("Second player, enter your name:\n")
-
     player_one = Player(player_one_name)
     player_two = Player(player_two_name)
 
     while player_one.position != board.squares and player_two.position != board.squares:
-        player_one.roll_dice
-        player_one.advance
-        if player_one.position == board.snake_start_loc or player_one.position == board.ladder_start_loc:
-            player_one.land_on_obstical
-        player_two.roll_dice
-        player_two.advance
-        if player_two.position == board.snake_start_loc or player_two.position == board.ladder_start_loc:
-            player_two.land_on_obstical
+        player_one.roll_dice()
+        player_one.advance()
+        print(board.snake_start_loc)
+        print(board.ladder_start_loc)
+        for num in range(len(board.snake_start_loc)):
+            if player_one.position == board.snake_start_loc[num]:
+                player_one.land_on_snake(board.snake_end_loc[num])
+        for num in range(len(board.ladder_start_loc)):
+            if player_one.position == board.ladder_start_loc[num]:
+                player_one.land_on_ladder(board.ladder_end_loc[num])
+        player_two.roll_dice()
+        player_two.advance()
+        for num in range(len(board.snake_start_loc)):
+            if player_two.position == board.snake_start_loc or player_two.position == board.ladder_start_loc:
+                player_two.land_on_snake()
+        for num in range(len(board.ladder_start_loc)):
+            if player_one.position == board.ladder_start_loc[num]:
+                player_one.land_on_ladder(board.ladder_start_loc[num], board.ladder_end_loc[num])
     if player_one.position == board.squares:
         board.win(player_one.name)
     if player_two.position == board.squares:
