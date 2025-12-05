@@ -93,8 +93,6 @@ def game_start():
     while player_one.position != board.squares and player_two.position != board.squares:
         player_one.roll_dice()
         player_one.advance()
-        print(board.snake_start_loc)
-        print(board.ladder_start_loc)
         for num in range(len(board.snake_start_loc)):
             if player_one.position == board.snake_start_loc[num]:
                 player_one.land_on_snake(board.snake_end_loc[num])
