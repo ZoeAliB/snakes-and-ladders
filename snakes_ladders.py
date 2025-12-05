@@ -27,7 +27,7 @@ class Player:
                   .format(name = self.name, dice = self.dice, pos = self.position, num = 100 - self.position))
 
     def land_on_snake(self, ob_end):
-        self.position = ob_end[num]
+        self.position = ob_end
         print("Oh no! {name} slid down a snake! They are now on square {pos}".format(name = self.name, pos = self.position))
 
     def land_on_ladder(self, ob_end):
@@ -72,7 +72,7 @@ class Board:
         replay = input("{name} has won! They have landed on square 100! \n" 
         "Would you like to play again? \n"
         "(Press Q to quit, press R to replay)\n".format(name = player_name))
-        while replay.lower() != "r" or replay.lower() != "q":
+        while replay.lower() not in ("r", "q"):
             replay = input("That wasn't right... lets try again. \n"
             "Press Q to quit, press R to replay\n")
         if replay.lower() == "r":
